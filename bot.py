@@ -34,14 +34,14 @@ for before_yesterday_value in before_yesterday_data:
    for yesterday_value in yesterday_data:
       if yesterday_value["conf_j1"] + (yesterday_value["conf_j1"] - before_yesterday_value["conf_j1"]) * 1.5 > 0:
          new_contaminations = yesterday_value["conf_j1"] + (yesterday_value["conf_j1"] - before_yesterday_value["conf_j1"]) * 1.5
-         tweet_text = "En vu des chiffres des contaminations du Covid19 de ces derniers jours, nous estimons que le nombre de nouveaux infectés le " + datetime.date.today().strftime('%d-%m-%Y') + " s'élèvera à " + str(new_contaminations) + " personnes."
-         #client.create_tweet(text=tweet_text)
-         print(tweet_text)
+         tweet_text = datetime.datetime.today().strftime('%d-%m-%Y %H:%M') + ". En vu des chiffres des contaminations du Covid19 de ces derniers jours, nous estimons que le nombre de nouveaux infectés aujourd'hui, le " + datetime.date.today().strftime('%d-%m-%Y') + ", s'élèvera à " + str(new_contaminations) + " personnes."
+         client.create_tweet(text=tweet_text)
+         #print(tweet_text)
          logfile.write(datetime.datetime.today().strftime('%d-%m-%Y %H:%M:%S') + " | Daily statement | Before yesterday cases = " + str(before_yesterday_value["conf_j1"]) + " ; Yesterday cases = " + str(yesterday_value["conf_j1"]) + " ; Today estimate = " + new_contaminations + "\n\n------------------------------\n\n")
       else:
-         tweet_text = "Hier, le " + yesterday_date + ", il y a eu " + str(yesterday_value["conf_j1"]) + " nouveaux cas de Covid, contre " + str(before_yesterday_value["conf_j1"]) + " le jour d'avant.\nCette différence peut s'expliquer en sortie de week-end: beaucoup moins de tests sont réalisés dimanche. Aucun calcul de cas probable ne peut donc être réalisé ce jour."
-         #client.create_tweet(text=tweet_text)
-         print(tweet_text)
+         tweet_text = datetime.datetime.today().strftime('%d-%m-%Y %H:%M') + ". Hier, le " + yesterday_date + ", il y a eu " + str(yesterday_value["conf_j1"]) + " nouveaux cas de Covid, contre " + str(before_yesterday_value["conf_j1"]) + " le jour d'avant.\nCette différence peut s'expliquer en sortie de week-end: beaucoup moins de tests sont réalisés dimanche. Aucun calcul de cas probable ne peut donc être réalisé ce jour.\n"
+         client.create_tweet(text=tweet_text)
+         #print(tweet_text)
          logfile.write(datetime.datetime.today().strftime('%d-%m-%Y %H:%M:%S') + " | Daily statement | Before yesterday cases = " + str(before_yesterday_value["conf_j1"]) + " ; Yesterday cases = " + str(yesterday_value["conf_j1"]) + "\n\n------------------------------\n\n")
 
 # Récupération des données les plus récentes des départements
@@ -82,14 +82,15 @@ for i in range(len(franceMapTable)):
 
 # Création d'une string à partir du tableau et publication du tweet
 franceMap = "".join(franceMapTable)
-tweet_text = emoji.emojize(':face_with_medical_mask:') + " Météo Covid du jour :\n\n" + franceMap
-#response = client.create_tweet(text=tweet_text)
-print(tweet_text)
+tweet_text = "Météo du " + datetime.datetime.today().strftime('%d-%m-%Y %H:%M') + ":\n\n" + franceMap
+response = client.create_tweet(text=tweet_text)
+#print(tweet_text)
+
 logfile.write(datetime.datetime.today().strftime('%d-%m-%Y %H:%M:%S') + " | France Map : Occupancy rate per department | " + logMapData + "\n\n------------------------------\n\n")
 
 # Réponse au tweet contenant la légende de la carte
 legende = "Cette carte représente le 'TO' (taux d'occupation : tension hospitalière sur la capacité en réanimation) par département, en pourcentage.\n\nLégende :\n" + emoji.emojize(':fire:') + " TO > 100%\n" + emoji.emojize(':warning:') + " TO > 80%\n" + emoji.emojize(':hot_face:') + " TO > 60%\n" + emoji.emojize(':face_with_head-bandage:') + " TO > 40%\n" + emoji.emojize(':sneezing_face:') + " TO > 20%\n" + emoji.emojize(':grinning_face:') + " TO < 20%"
-print(legende)
-#client.create_tweet(text=legende, in_reply_to_tweet_id=response[0]["id"])
+#print(legende)
+client.create_tweet(text=legende, in_reply_to_tweet_id=response[0]["id"])
 
 logfile.close()
