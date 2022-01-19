@@ -33,7 +33,7 @@ yesterday_data = json.loads(yesterday_response)
 for before_yesterday_value in before_yesterday_data:
    for yesterday_value in yesterday_data:
       if yesterday_value["conf_j1"] + (yesterday_value["conf_j1"] - before_yesterday_value["conf_j1"]) * 1.5 > 0:
-         new_contaminations = yesterday_value["conf_j1"] + (yesterday_value["conf_j1"] - before_yesterday_value["conf_j1"]) * 1.5
+         new_contaminations = str(int(yesterday_value["conf_j1"] + (yesterday_value["conf_j1"] - before_yesterday_value["conf_j1"]) * 1.5))
          tweet_text = datetime.datetime.today().strftime('%d-%m-%Y %H:%M') + ". En vu des chiffres des contaminations du Covid19 de ces derniers jours, nous estimons que le nombre de nouveaux infectés aujourd'hui, le " + datetime.date.today().strftime('%d-%m-%Y') + ", s'élèvera à " + str(new_contaminations) + " personnes."
          client.create_tweet(text=tweet_text)
          logfile.write(datetime.datetime.today().strftime('%d-%m-%Y %H:%M:%S') + " | Daily statement | Before yesterday cases = " + str(before_yesterday_value["conf_j1"]) + " ; Yesterday cases = " + str(yesterday_value["conf_j1"]) + " ; Today estimate = " + new_contaminations + "\n\n------------------------------\n\n")
